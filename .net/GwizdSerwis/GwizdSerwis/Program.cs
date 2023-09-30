@@ -2,6 +2,7 @@ using AutoMapper;
 using GwizdSerwis;
 using GwizdSerwis.Context;
 using GwizdSerwis.DbEntities;
+using GwizdSerwis.Filters;
 using GwizdSerwis.Repository;
 using GwizdSerwis.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -22,6 +23,8 @@ builder.Services.AddTransient<IImageRepository, ImageRepository>();
 builder.Services.AddScoped<IAnimalService, AnimalService>();
 builder.Services.AddScoped<IPointService, PointService>();
 builder.Services.AddScoped<ImageService, ImageService>();
+//filter
+builder.Services.AddScoped<MyCustomActionFilter>();
 
 builder.Services.AddControllers();
 
