@@ -33,9 +33,9 @@ namespace GwizdSerwis.Controllers
 
         // POST: api/sample
         [HttpPost]
-        public IActionResult Post([FromBody] Point model)
+        public IActionResult Post([FromBody] PointFVO pointFVO)
         {
-            throw new NotImplementedException();
+            
         }
 
         // PUT: api/sample/{id}
