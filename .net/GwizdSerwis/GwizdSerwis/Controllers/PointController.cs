@@ -1,4 +1,5 @@
 using GwizdSerwis.DbEntities;
+using GwizdSerwis.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GwizdSerwis.Controllers
@@ -7,51 +8,47 @@ namespace GwizdSerwis.Controllers
     [ApiController]
     public class PointController : ControllerBase
     {
+        protected readonly IPointService _pointService;
+
+        public PointController(IPointService pointService)
+        {
+            _pointService = pointService;
+        }
+
         // GET: api/sample
         [HttpGet("Points")]
-        public ActionResult<ICollection<Point>> Get()
+        public async Task<ActionResult<ICollection<Point>>> GetAsync()
         {
             throw new NotImplementedException();
+            return await _pointService.GetAllAsync();
         }
 
         // GET: api/sample/{id}
         [HttpGet("{id}")]
-        public IActionResult GetById(int id)
+        public IActionResult GetByIdAsync(int id)
         {
-            // Your logic to retrieve data by ID goes here
-            // For simplicity, we'll return a sample JSON response
-            var data = new { Id = id, Message = "Data for ID " + id };
-            return Ok(data);
+            throw new NotImplementedException();
         }
 
         // POST: api/sample
         [HttpPost]
         public IActionResult Post([FromBody] Point model)
         {
-            // Your logic to create a new resource goes here
-            // For simplicity, we'll return a sample JSON response
-            var data = new { Message = "Resource created successfully", CreatedData = model };
-            return CreatedAtAction("Get", data);
+            throw new NotImplementedException();
         }
 
         // PUT: api/sample/{id}
         [HttpPut("{id}")]
         public IActionResult Put(int id, [FromBody] Point model)
         {
-            // Your logic to update a resource by ID goes here
-            // For simplicity, we'll return a sample JSON response
-            var data = new { Message = "Resource updated successfully", UpdatedData = model };
-            return Ok(data);
+            throw new NotImplementedException();
         }
 
         // DELETE: api/sample/{id}
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
-            // Your logic to delete a resource by ID goes here
-            // For simplicity, we'll return a sample JSON response
-            var data = new { Message = "Resource with ID " + id + " deleted successfully" };
-            return Ok(data);
+            throw new NotImplementedException();
         }
     }
 }
