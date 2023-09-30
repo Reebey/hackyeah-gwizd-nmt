@@ -6,7 +6,7 @@ using System.Reflection.Emit;
 
 namespace GwizdSerwis.Context;
 
-public class ApplicationDbContext : IdentityDbContext<IdentityUser>
+public class ApplicationDbContext : IdentityDbContext<AppUser, IdentityRole<int>, int>
 {
     public DbSet<Animal> Animals { get; set; }
     public DbSet<Image> Images { get; set; }
@@ -31,8 +31,8 @@ public class ApplicationDbContext : IdentityDbContext<IdentityUser>
     public void Seed(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<AppUser>().HasData(
-               new AppUser() { Id = 1, Email="test@example.com", UserName = "Mateusz" },
-               new AppUser() { Id = 2, Email="admintest@example.com", UserName = "Michal" }
+               new AppUser() { Id = 1, Email="test@example.com", UserName = "test@example.com", FirstName = "Mateusz", LastName = "Kowalski" },
+               new AppUser() { Id = 2, Email="admintest@example.com", UserName = "admintest@example.com", FirstName = "Michal", LastName = "Nowak" }
         );
 
         modelBuilder.Entity<Animal>().HasData(

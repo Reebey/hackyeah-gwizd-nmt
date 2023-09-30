@@ -1,10 +1,14 @@
 using AutoMapper;
 using GwizdSerwis;
 using GwizdSerwis.Context;
+using GwizdSerwis.DbEntities;
 using GwizdSerwis.Repository;
 using GwizdSerwis.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -26,8 +30,38 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("SqlConnection")));
-builder.Services.AddIdentity<IdentityUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = true)
-                .AddEntityFrameworkStores<ApplicationDbContext>();
+builder.Services.AddIdentity<AppUser, IdentityRole<int>>(options => options.SignIn.RequireConfirmedAccount = true)
+                .AddEntityFrameworkStores<ApplicationDbContext>()
+                .AddDefaultTokenProviders();
+
+builder.Services.Configure<IdentityOptions>(options =>
+{
+    options.Password.RequireDigit = false;          // Don't require a digit
+    options.Password.RequiredLength = 6;            // Minimum password length
+    options.Password.RequireUppercase = false;      // Don't require an uppercase letter
+    options.Password.RequireLowercase = false;      // Don't require a lowercase letter
+    options.Password.RequireNonAlphanumeric = false; // Don't require a non-alphanumeric character
+});
+
+
+// auth
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+}).AddJwtBearer(options =>
+{
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = false,
+        ValidateAudience = false,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("MySecretKey!@#123")),
+        ClockSkew = TimeSpan.Zero
+    };
+});
+
 
 builder.Services.AddSingleton(provider => new MapperConfiguration(cfg =>
 {
