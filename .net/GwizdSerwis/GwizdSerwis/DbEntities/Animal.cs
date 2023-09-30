@@ -13,5 +13,5 @@ namespace GwizdSerwis.DbEntities
     }
 
 
-    public enum ThreatLevel : byte { Low = 0, High };
+    public enum ThreatLevel : byte { Low = 1, High = 2 };
 }

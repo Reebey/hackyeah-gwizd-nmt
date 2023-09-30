@@ -1,3 +1,5 @@
+using AutoMapper;
+using GwizdSerwis;
 using GwizdSerwis.Context;
 using GwizdSerwis.Repository;
 using GwizdSerwis.Services;
@@ -9,9 +11,11 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 //repositories
+builder.Services.AddTransient<IAnimalRepository, AnimalRepository>();
 builder.Services.AddTransient<IPointRepository, PointRepository>();
 builder.Services.AddTransient<IImageRepository, ImageRepository>();
 //services
+builder.Services.AddScoped<IAnimalService, AnimalService>();
 builder.Services.AddScoped<IPointService, PointService>();
 builder.Services.AddScoped<ImageService, ImageService>();
 
@@ -25,6 +29,10 @@ builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlSer
 builder.Services.AddIdentity<IdentityUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
+builder.Services.AddSingleton(provider => new MapperConfiguration(cfg =>
+{
+    cfg.AddProfile(typeof(AutoMapperProfiles));
+}).CreateMapper());
 
 var app = builder.Build();
 
