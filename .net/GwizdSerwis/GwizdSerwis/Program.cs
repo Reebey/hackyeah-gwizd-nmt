@@ -10,9 +10,10 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 //repositories
 builder.Services.AddTransient<IPointRepository, PointRepository>();
+builder.Services.AddTransient<IImageRepository, ImageRepository>();
 //services
 builder.Services.AddScoped<IPointService, PointService>();
-
+builder.Services.AddScoped<ImageService, ImageService>();
 
 builder.Services.AddControllers();
 

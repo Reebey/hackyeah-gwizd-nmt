@@ -1,4 +1,5 @@
 using GwizdSerwis.DbEntities;
+using GwizdSerwis.Models.Incoming;
 using GwizdSerwis.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -35,7 +36,7 @@ namespace GwizdSerwis.Controllers
         [HttpPost]
         public IActionResult Post([FromBody] PointFVO pointFVO)
         {
-            
+            throw new NotImplementedException();
         }
 
         // PUT: api/sample/{id}
