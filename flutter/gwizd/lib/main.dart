@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:gwizd/home_screen.dart';
+import 'package:gwizd/home_view.dart';
+import 'package:gwizd/login_view.dart';
+import 'package:gwizd/register_view.dart';
 
 void main() {
   runApp(const MyApp());
@@ -12,6 +14,13 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      initialRoute: '/login',
+      routes: {
+        '/home': (context) => const HomeView(),
+        '/login': (context) => const LoginView(),
+        '/register': (context) => RegisterView(),
+        // Add more routes as needed
+      },
       title: 'Gwizd',
       theme: ThemeData(
         // This is the theme of your application.
@@ -32,7 +41,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: HomeScreen(),
+      home: const LoginView(),
     );
   }
 }

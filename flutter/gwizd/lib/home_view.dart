@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 
-class HomeScreen extends StatefulWidget {
+class HomeView extends StatefulWidget {
+  const HomeView({super.key});
+
   @override
-  _HomeScreenState createState() => _HomeScreenState();
+  _HomeViewState createState() => _HomeViewState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _HomeViewState extends State<HomeView> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
@@ -16,13 +17,13 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
-        title: Text('Map App'),
+        title: const Text('Map App'),
       ),
       drawer: Drawer(
         child: ListView(
           children: <Widget>[
             ListTile(
-              title: Text('Dashboard'),
+              title: const Text('Dashboard'),
               onTap: () {
                 // Handle dashboard navigation
                 Navigator.pop(context);
@@ -36,7 +37,7 @@ class _HomeScreenState extends State<HomeScreen> {
         child: ListView(
           children: <Widget>[
             ListTile(
-              title: Text('Filters'),
+              title: const Text('Filters'),
               onTap: () {
                 // Handle filter navigation
                 Navigator.pop(context);
@@ -63,7 +64,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 height: 80.0,
                 point: LatLng(51.5, -0.09), // Marker position
                 builder: (ctx) => Container(
-                  child: Icon(
+                  child: const Icon(
                     Icons.location_on,
                     size: 50,
                     color: Colors.red,
@@ -80,7 +81,7 @@ class _HomeScreenState extends State<HomeScreen> {
       //   },
       //   child: Icon(Icons.add),
       // ),
-      bottomNavigationBar: BottomAppBar(
+      bottomNavigationBar: const BottomAppBar(
           // Add a bottom app bar with navigation items or additional buttons if needed
           ),
     );
