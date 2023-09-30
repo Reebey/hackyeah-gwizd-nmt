@@ -21,7 +21,7 @@ namespace GwizdSerwis.Controllers
         public async Task<ActionResult> GetAsync()
         {
             throw new NotImplementedException();
-            var data =  await _pointService.GetAllAsync();
+            var data = await _pointService.GetAllAsync();
             return Ok(data);
         }
 
