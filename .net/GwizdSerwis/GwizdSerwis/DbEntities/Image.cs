@@ -5,7 +5,7 @@ namespace GwizdSerwis.DbEntities
     public class Image : EntityBase
     {
         public int PointId { get; set; }
-        string Path { get; set; } = null!;
+        public string Path { get; set; } = null!;
 
 
         [ForeignKey("PointId")]

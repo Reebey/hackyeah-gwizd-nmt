@@ -14,16 +14,14 @@ namespace GwizdSerwis.Repository
     public class PointRepository : IPointRepository
     {
         public readonly ApplicationDbContext _dbContext;
-        public readonly DbSet<Point> _table;
         public PointRepository(ApplicationDbContext dbContext)
         {
             _dbContext = dbContext;
-            _table = dbContext.Set<Point>();
         }
 
         public async Task<ICollection<Point>> GetAllAsync()
         {
-            return await _table.ToListAsync();
+            return await _dbContext.Points.ToListAsync();
         }
     }
 }
