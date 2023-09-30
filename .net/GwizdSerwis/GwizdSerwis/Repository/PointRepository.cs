@@ -2,7 +2,6 @@ using GwizdSerwis.Context;
 using GwizdSerwis.DbEntities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System.Collections;
 
 namespace GwizdSerwis.Repository

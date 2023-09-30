@@ -17,10 +17,9 @@ namespace GwizdSerwis.Controllers
 
         // GET: api/sample
         [HttpGet("Points")]
-        public async Task<ActionResult<ICollection<Point>>> GetAsync()
+        public async Task<ActionResult<ICollection<Point>>> GetAllAsync()
         {
-            throw new NotImplementedException();
-            return await _pointService.GetAllAsync();
+            return Ok(await _pointService.GetAllAsync());
         }
 
         // GET: api/sample/{id}

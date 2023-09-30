@@ -6,15 +6,16 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
+
 // Add services to the container.
 //repositories
-builder.Services.AddTransient<PointRepository>();
+builder.Services.AddTransient<IPointRepository, PointRepository>();
 //services
-builder.Services.AddScoped<PointService>();
-
+builder.Services.AddScoped<IPointService, PointService>();
 
 
 builder.Services.AddControllers();
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

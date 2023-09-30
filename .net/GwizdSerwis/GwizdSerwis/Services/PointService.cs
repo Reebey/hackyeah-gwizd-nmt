@@ -1,6 +1,5 @@
 using GwizdSerwis.DbEntities;
 using GwizdSerwis.Repository;
-using Microsoft.AspNetCore.Mvc;
 
 namespace GwizdSerwis.Services
 {
@@ -9,11 +8,11 @@ namespace GwizdSerwis.Services
         Task<ICollection<Point>> GetAllAsync();
     }
 
-    public class PointService : IPointRepository
+    public class PointService : IPointService
     {
-        private readonly PointRepository _pointRepository;
+        private readonly IPointRepository _pointRepository;
 
-        public PointService(PointRepository pointRepository)
+        public PointService(IPointRepository pointRepository)
         {
             _pointRepository = pointRepository;
         }
