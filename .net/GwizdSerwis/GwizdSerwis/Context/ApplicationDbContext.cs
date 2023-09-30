@@ -24,5 +24,15 @@ public class ApplicationDbContext : IdentityDbContext<IdentityUser>
         modelBuilder.Entity<Animal>();
         modelBuilder.Entity<Image>();
         modelBuilder.Entity<Point>();
+
+        Seed(modelBuilder);
+    }
+
+    public void Seed(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<AppUser>().HasData(
+               new AppUser() { Id = 1, Email="test@example.com", UserName = "Mateusz" },
+               new AppUser() { Id = 2, Email="admintest@example.com", UserName = "Michal" }
+        );
     }
 }

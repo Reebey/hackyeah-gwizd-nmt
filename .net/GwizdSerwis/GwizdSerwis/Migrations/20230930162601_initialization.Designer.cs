@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GwizdSerwis.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20230930160331_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20230930162601_initialization")]
+    partial class initialization
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -98,6 +98,32 @@ namespace GwizdSerwis.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("AppUser");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "f77b4fef-6231-4e14-a4ea-2c5e852395c7",
+                            Email = "test@example.com",
+                            EmailConfirmed = false,
+                            LockoutEnabled = false,
+                            PhoneNumberConfirmed = false,
+                            TwoFactorEnabled = false,
+                            UserName = "Mateusz"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "5ba850f5-e6da-4905-9239-3ab735a37f9c",
+                            Email = "admintest@example.com",
+                            EmailConfirmed = false,
+                            LockoutEnabled = false,
+                            PhoneNumberConfirmed = false,
+                            TwoFactorEnabled = false,
+                            UserName = "Michal"
+                        });
                 });
 
             modelBuilder.Entity("GwizdSerwis.DbEntities.Image", b =>

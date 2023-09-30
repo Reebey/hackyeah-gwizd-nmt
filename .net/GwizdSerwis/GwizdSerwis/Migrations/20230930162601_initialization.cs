@@ -3,10 +3,12 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
+#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
+
 namespace GwizdSerwis.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class initialization : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -242,6 +244,15 @@ namespace GwizdSerwis.Migrations
                         principalTable: "Points",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.InsertData(
+                table: "AppUser",
+                columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Email", "EmailConfirmed", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
+                values: new object[,]
+                {
+                    { 1, 0, "f77b4fef-6231-4e14-a4ea-2c5e852395c7", "test@example.com", false, false, null, null, null, null, null, false, null, false, "Mateusz" },
+                    { 2, 0, "5ba850f5-e6da-4905-9239-3ab735a37f9c", "admintest@example.com", false, false, null, null, null, null, null, false, null, false, "Michal" }
                 });
 
             migrationBuilder.CreateIndex(
