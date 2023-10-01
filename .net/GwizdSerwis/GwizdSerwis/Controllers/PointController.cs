@@ -1,21 +1,25 @@
 using GwizdSerwis.DbEntities;
 using GwizdSerwis.Models.Incoming;
 using GwizdSerwis.Services;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace GwizdSerwis.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(AuthenticationSchemes = "Bearer")]
     public class PointController : ControllerBase
     {
         private readonly IPointService _pointService;
-        private readonly ITokenService _tokenService;
+        private readonly UserManager<AppUser> _userManager;
 
-        public PointController(IPointService pointService, ITokenService tokenService)
+        public PointController(IPointService pointService, UserManager<AppUser> userManager)
         {
             _pointService = pointService;
-            _tokenService = tokenService;
+            _userManager = userManager;
         }
 
         // GET: api/sample
@@ -38,8 +42,9 @@ namespace GwizdSerwis.Controllers
         [HttpPost("CreatePoint")]
         public async Task<IActionResult> CreatePoint([FromBody] PointFVO pointFVO)
         {
-            var principal = _tokenService.GetClaimsPrincipalFromToken(AuthController.Token);
-            var point = await _pointService.CreatePointAync();
+            string userName = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
+            var user = await _userManager.FindByEmailAsync(userName);
+            var point = await _pointService.CreatePointAync(user.Id.ToString(), pointFVO);
             return Ok(point);
         }
 
