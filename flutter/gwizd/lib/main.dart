@@ -5,6 +5,8 @@ import 'package:gwizd/home_view.dart';
 import 'package:gwizd/login_view.dart';
 import 'package:gwizd/register_view.dart';
 
+import 'dashboard_view.dart';
+
 void main() {
   runApp(const MyApp());
 }
@@ -30,6 +32,7 @@ class MyApp extends StatelessWidget {
       initialRoute: '/home',
       routes: {
         '/home': (context) => const HomeView(),
+        '/dashboard': (context) => DashboardView(),
         '/login': (context) => const LoginView(),
         '/register': (context) => RegisterView(),
         // Add more routes as needed

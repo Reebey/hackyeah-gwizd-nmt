@@ -60,6 +60,7 @@ class ApiClient {
     if (response.statusCode == 200) {
       return response;
     } else {
+      print(Uri.parse('$baseUrl/$url').toString());
       print(response.statusCode);
       print(response.body);
       throw Exception('Failed to send get');
@@ -67,12 +68,12 @@ class ApiClient {
   }
 
   Future<http.Response> getAnimals() async {
-    return await sendGet('/api/Animal/Animals');
+    return await sendGet('api/Animal/Animals');
   }
 
   Future<http.Response> postLogin(LoginModel model) async {
     final response = await sendPost(
-      '/api/Auth/Login',
+      'api/Auth/Login',
       model.toJson(),
     );
     return response;
@@ -80,7 +81,7 @@ class ApiClient {
 
   Future<http.Response> postRegister(RegisterModel model) async {
     final response = await sendPost(
-      '/api/Auth/Register',
+      'api/Auth/Register',
       model.toJson(),
     );
     return response;
