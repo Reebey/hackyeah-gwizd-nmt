@@ -6,6 +6,7 @@ namespace GwizdSerwis.Repository;
 public interface IImageRepository
 {
     Task<byte[]> GetImageAsync(int id);
+    Task<int> AddNewImage(Image image);
 }
 
 public class ImageRepository : IImageRepository
@@ -15,6 +16,13 @@ public class ImageRepository : IImageRepository
     public ImageRepository(ApplicationDbContext context)
     {
         _context = context;
+    }
+
+    public async Task<int> AddNewImage(Image image)
+    {
+        _context.Images.Add(image);
+        await _context.SaveChangesAsync();
+        return image.Id;
     }
 
     public async Task<byte[]> GetImageAsync(int id)

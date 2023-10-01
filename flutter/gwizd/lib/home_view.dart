@@ -5,12 +5,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:gwizd/models/animal_model.dart';
+import 'package:gwizd/models/point_model.dart';
 import 'package:gwizd/utility/http_client.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:intl/intl.dart';
 
 class HomeView extends StatefulWidget {
   const HomeView({Key? key});
@@ -29,14 +31,25 @@ class _HomeViewState extends State<HomeView> {
   bool isReportButtonEnabled = true;
 
   late List<AnimalModel> animals = List.empty();
-  List<String> apoints = ['Point A', 'Point B', 'Point C', 'Point D'];
+  late List<Point> dashboardPoints = List.empty();
+  late List<Point> points = List.empty();
+
+  late MapController mapController;
   String? selectedAnimal;
+  Point? selectedPoint;
 
   @override
   void initState() {
     super.initState();
 
+    mapController = MapController();
     fetchAnimals();
+    fetchDashboardPoints();
+    fetchPoints();
+  }
+
+  void centerMap(LatLng targetPoint) {
+    mapController.move(targetPoint, 13.0); // 13.0 is the zoom level
   }
 
   @override
@@ -65,19 +78,41 @@ class _HomeViewState extends State<HomeView> {
                       horizontal: 12, vertical: 16), // Adjust padding
                 ),
                 value: selectedAnimal,
-                items: animals.map((animal) {
-                  return DropdownMenuItem<String>(
-                    value: animal.id.toString(),
-                    child: Text(animal.name),
-                  );
-                }).toList(),
+                items: [
+                  ...animals.map((animal) {
+                    return DropdownMenuItem<String>(
+                      value: animal.id.toString(),
+                      child: Text(animal.name),
+                    );
+                  }).toList(),
+                  const DropdownMenuItem<String>(
+                    value: null,
+                    child: Text('None'),
+                  )
+                ],
                 onChanged: (value) {
                   setState(() {
-                    selectedAnimal = value!;
+                    selectedAnimal = value;
                   });
                 },
               ),
             ),
+            ...dashboardPoints
+                .where((element) => selectedAnimal == null
+                    ? true
+                    : element.animal.id.toString() == selectedAnimal)
+                .map<ListTile>((item) => ListTile(
+                      title: Text(item.animal.name),
+                      subtitle: Text(
+                        DateFormat("HH:mm:ss yyyy-MM-dd")
+                            .format(DateTime.parse(item.added)),
+                      ),
+                      onTap: () {
+                        centerMap(LatLng(item.latitude, item.longitude));
+                        // Add your item click action here
+                        Navigator.pop(context); // Close the drawer
+                      },
+                    )),
             // Add more dashboard items here
           ],
         ),
@@ -96,6 +131,7 @@ class _HomeViewState extends State<HomeView> {
         ),
       ),
       body: FlutterMap(
+        mapController: mapController,
         options: MapOptions(
           center: LatLng(50.0500, 19.9440),
           zoom: 13.0,
@@ -105,22 +141,24 @@ class _HomeViewState extends State<HomeView> {
             urlTemplate: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
             subdomains: ['a', 'b', 'c'],
           ),
-          MarkerLayerOptions(
-            markers: [
-              Marker(
-                width: 80.0,
-                height: 80.0,
-                point: LatLng(51.5, -0.09),
-                builder: (ctx) => Container(
-                  child: const Icon(
-                    Icons.location_on,
-                    size: 50,
-                    color: Colors.red,
+          ...points.map<MarkerLayerOptions>((e) => MarkerLayerOptions(
+                markers: [
+                  Marker(
+                    width: 30.0,
+                    height: 30.0,
+                    point: LatLng(e.latitude, e.longitude),
+                    builder: (ctx) => Container(
+                      child: Icon(
+                        Icons.location_on,
+                        size: 50,
+                        color: (e.animal.threatLevel == 1)
+                            ? Colors.yellowAccent
+                            : Colors.redAccent,
+                      ),
+                    ),
                   ),
-                ),
-              ),
-            ],
-          ),
+                ],
+              )),
         ],
       ),
       bottomNavigationBar: BottomAppBar(
@@ -174,12 +212,25 @@ class _HomeViewState extends State<HomeView> {
   ) async {
     try {
       final animal = formData['Animal'];
-      final location = formData['Location'];
+      final location = jsonDecode(formData['Location']);
       final annotation = formData['Annotation'];
 
       print(animal);
       print(location);
       print(annotation);
+
+      final point = PointFVO(
+          animalId: animal,
+          latitude: location['latitude'],
+          longitude: location['latitude'],
+          annotation: annotation);
+      final response = await apiClient.postPoint(point);
+      selectedPoint = Point.fromJson(json.decode(response.body));
+
+      final imgIdResponse =
+          await apiClient.postPointImage(selectedPoint!.id, image!);
+
+      centerMap(LatLng(point.latitude, point.longitude));
 
       // Close the report dialog
       Navigator.pop(context);
@@ -192,11 +243,28 @@ class _HomeViewState extends State<HomeView> {
   }
 
   Future<void> fetchAnimals() async {
-    final animalsResponse = await apiClient.getAnimals();
-    final data = json.decode(animalsResponse.body);
+    final response = await apiClient.getAnimals();
+    final data = json.decode(response.body);
     setState(() {
       animals =
           data.map<AnimalModel>((json) => AnimalModel.fromJson(json)).toList();
+    });
+  }
+
+  Future<void> fetchPoints() async {
+    final response = await apiClient.getDashboardPoints();
+    final data = json.decode(response.body);
+    setState(() {
+      points = data.map<Point>((json) => Point.fromJson(json)).toList();
+    });
+  }
+
+  Future<void> fetchDashboardPoints() async {
+    final response = await apiClient.getDashboardPoints();
+    final data = json.decode(response.body);
+    setState(() {
+      dashboardPoints =
+          data.map<Point>((json) => Point.fromJson(json)).toList();
     });
   }
 
@@ -217,11 +285,6 @@ class _HomeViewState extends State<HomeView> {
                   'Report a Wild Animal',
                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                 ),
-                // FormBuilderTextField(
-                //   name: 'animalName',
-                //   decoration: const InputDecoration(labelText: 'Animal Name'),
-                //   // validator: FormBuilderValidators.required(context),
-                // ),
                 FormBuilderDropdown(
                   name: 'Animal',
                   decoration: const InputDecoration(labelText: 'Animal Type'),

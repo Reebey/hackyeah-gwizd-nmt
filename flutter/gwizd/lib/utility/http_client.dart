@@ -1,8 +1,10 @@
 import 'dart:convert';
 
 import 'package:gwizd/models/auth_model.dart';
+import 'package:gwizd/models/point_model.dart';
 import 'package:gwizd/utility/jwt_token_store.dart';
 import 'package:http/http.dart' as http;
+import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ApiClient {
@@ -69,6 +71,28 @@ class ApiClient {
 
   Future<http.Response> getAnimals() async {
     return await sendGet('api/Animal/Animals');
+  }
+
+  Future<http.Response> getDashboardPoints() async {
+    return await sendGet('api/Point/NewestPoints?limit=100');
+  }
+
+  Future<http.Response> postPoint(PointFVO model) async {
+    final response = await sendPost(
+      'api/Point/CreatePoint',
+      model.toJson(),
+    );
+    return response;
+  }
+
+  Future<http.Response> postPointImage(int pointId, XFile imageFile) async {
+    final url = Uri.parse('$baseUrl/images/UploadImage?pointId=$pointId');
+    var request = http.MultipartRequest('POST', url)
+      ..files.add(await http.MultipartFile.fromPath('image', imageFile.path));
+
+    var responseStream = await request.send();
+
+    return await http.Response.fromStream(responseStream);
   }
 
   Future<http.Response> postLogin(LoginModel model) async {
