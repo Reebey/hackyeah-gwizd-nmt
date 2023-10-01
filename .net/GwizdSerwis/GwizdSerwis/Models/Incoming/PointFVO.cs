@@ -4,7 +4,8 @@ namespace GwizdSerwis.Models.Incoming
 {
     public class PointFVO
     {
-        LocalizationDTO Localization { get; set; } = null!;
-        UserDTO User { get; set; } = null!;
+        public LocalizationDTO? Localization { get; set; }
+        public string? Annotation { get; set; }
+        public int? AnimalId { get; set; }
     }
 }

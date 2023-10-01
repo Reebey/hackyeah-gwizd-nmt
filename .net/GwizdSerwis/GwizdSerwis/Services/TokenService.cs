@@ -8,14 +8,15 @@ namespace GwizdSerwis.Services;
 public interface ITokenService
 {
     ClaimsPrincipal GetClaimsPrincipalFromToken(string token);
+    (string userId, string userName, string userEmail, string userRole) GetUserInfo(ClaimsPrincipal user);
 }
 
-public class TokenService
+public class TokenService : ITokenService
 {
     public ClaimsPrincipal GetClaimsPrincipalFromToken(string token)
     {
         var tokenHandler = new JwtSecurityTokenHandler();
-        SecurityKey key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("YourSecretKey"));
+        SecurityKey key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("MySecretKey!@#123"));
 
         try
         {
@@ -33,6 +34,22 @@ public class TokenService
         catch (Exception ex)
         {
             throw new Exception("Token validation failed: " + ex.Message);
+        }
+    }
+
+    public (string userId, string userName, string userEmail, string userRole) GetUserInfo(ClaimsPrincipal user)
+    {
+        if (user.Identity.IsAuthenticated)
+        {
+            var userId = user.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var userName = user.Identity.Name;
+            var userEmail = user.FindFirst(ClaimTypes.Email)?.Value;
+            var userRole = user.FindFirst(ClaimTypes.Role)?.Value;
+            return (userId, userName, userEmail, userRole);
+        }
+        else
+        {
+            return (string.Empty, string.Empty, string.Empty, string.Empty);
         }
     }
 }

@@ -9,10 +9,10 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using System.Security.Claims;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
-
 
 // Add services to the container.
 //repositories
@@ -23,6 +23,8 @@ builder.Services.AddTransient<IImageRepository, ImageRepository>();
 builder.Services.AddScoped<IAnimalService, AnimalService>();
 builder.Services.AddScoped<IPointService, PointService>();
 builder.Services.AddScoped<ImageService, ImageService>();
+builder.Services.AddScoped<ITokenService, TokenService>();
+builder.Services.AddScoped<INearestNeighborPointService, NearestNeighborPointService>();
 //filter
 builder.Services.AddScoped<MyCustomActionFilter>();
 
@@ -44,6 +46,7 @@ builder.Services.Configure<IdentityOptions>(options =>
     options.Password.RequireUppercase = false;      // Don't require an uppercase letter
     options.Password.RequireLowercase = false;      // Don't require a lowercase letter
     options.Password.RequireNonAlphanumeric = false; // Don't require a non-alphanumeric character
+    options.ClaimsIdentity.UserIdClaimType = ClaimTypes.NameIdentifier;
 });
 
 
@@ -58,8 +61,8 @@ builder.Services.AddAuthentication(options =>
     {
         ValidateIssuer = false,
         ValidateAudience = false,
-        ValidateLifetime = true,
-        ValidateIssuerSigningKey = true,
+        ValidateLifetime = false,
+        ValidateIssuerSigningKey = false,
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("MySecretKey!@#123")),
         ClockSkew = TimeSpan.Zero
     };
@@ -72,6 +75,13 @@ builder.Services.AddSingleton(provider => new MapperConfiguration(cfg =>
 }).CreateMapper());
 
 var app = builder.Build();
+
+//create database
+var s = app.Services.GetRequiredService<IServiceScopeFactory>();
+using (var scope = s.CreateScope())
+{
+    scope.ServiceProvider.GetRequiredService<ApplicationDbContext>().Database.EnsureCreated();
+}
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
