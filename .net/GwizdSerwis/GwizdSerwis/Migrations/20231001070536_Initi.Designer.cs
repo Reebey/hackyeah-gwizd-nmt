@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GwizdSerwis.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20230930185828_Initial")]
-    partial class Initial
+    [Migration("20231001070536_Initi")]
+    partial class Initi
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -187,7 +187,7 @@ namespace GwizdSerwis.Migrations
                         {
                             Id = 1,
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "5e9d9e1c-d0fd-4c9d-a6be-910deeafbcbf",
+                            ConcurrencyStamp = "a4111d83-e1bc-423d-ba45-62b14774df97",
                             Email = "test@example.com",
                             EmailConfirmed = false,
                             FirstName = "Mateusz",
@@ -201,7 +201,7 @@ namespace GwizdSerwis.Migrations
                         {
                             Id = 2,
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "20e05b14-810c-443e-86da-17808657995f",
+                            ConcurrencyStamp = "cdba7856-fc5b-4b9a-802a-cf1ab1dbd5b1",
                             Email = "admintest@example.com",
                             EmailConfirmed = false,
                             FirstName = "Michal",
@@ -243,6 +243,12 @@ namespace GwizdSerwis.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<DateTime>("ActiveUntil")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("Added")
+                        .HasColumnType("datetime2");
+
                     b.Property<int>("AnimalId")
                         .HasColumnType("int");
 
@@ -251,6 +257,9 @@ namespace GwizdSerwis.Migrations
 
                     b.Property<int>("AuthorId")
                         .HasColumnType("int");
+
+                    b.Property<string>("District")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<double>("Latitude")
                         .HasColumnType("float");
@@ -265,6 +274,125 @@ namespace GwizdSerwis.Migrations
                     b.HasIndex("AuthorId");
 
                     b.ToTable("Points");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            ActiveUntil = new DateTime(2023, 10, 1, 19, 5, 36, 766, DateTimeKind.Local).AddTicks(8233),
+                            Added = new DateTime(2023, 10, 1, 9, 5, 36, 766, DateTimeKind.Local).AddTicks(8191),
+                            AnimalId = 1,
+                            Annotation = "Cokolwiek",
+                            AuthorId = 1,
+                            District = "Małopolska",
+                            Latitude = 50.049999999999997,
+                            Longitude = 19.923999999999999
+                        },
+                        new
+                        {
+                            Id = 2,
+                            ActiveUntil = new DateTime(2023, 10, 1, 13, 5, 36, 766, DateTimeKind.Local).AddTicks(8240),
+                            Added = new DateTime(2023, 10, 1, 9, 5, 36, 766, DateTimeKind.Local).AddTicks(8238),
+                            AnimalId = 2,
+                            Annotation = "Cokolwiek",
+                            AuthorId = 1,
+                            District = "Małopolska",
+                            Latitude = 50.149999999999999,
+                            Longitude = 19.974
+                        },
+                        new
+                        {
+                            Id = 3,
+                            ActiveUntil = new DateTime(2023, 10, 1, 12, 5, 36, 766, DateTimeKind.Local).AddTicks(8244),
+                            Added = new DateTime(2023, 10, 1, 9, 5, 36, 766, DateTimeKind.Local).AddTicks(8243),
+                            AnimalId = 4,
+                            Annotation = "Cokolwiek",
+                            AuthorId = 1,
+                            District = "Małopolska",
+                            Latitude = 50.25,
+                            Longitude = 19.954000000000001
+                        },
+                        new
+                        {
+                            Id = 4,
+                            ActiveUntil = new DateTime(2023, 10, 1, 19, 5, 36, 766, DateTimeKind.Local).AddTicks(8249),
+                            Added = new DateTime(2023, 10, 1, 9, 5, 36, 766, DateTimeKind.Local).AddTicks(8247),
+                            AnimalId = 7,
+                            AuthorId = 1,
+                            District = "Małopolska",
+                            Latitude = 51.149999999999999,
+                            Longitude = 19.963999999999999
+                        },
+                        new
+                        {
+                            Id = 5,
+                            ActiveUntil = new DateTime(2023, 10, 1, 17, 5, 36, 766, DateTimeKind.Local).AddTicks(8253),
+                            Added = new DateTime(2023, 10, 1, 9, 5, 36, 766, DateTimeKind.Local).AddTicks(8252),
+                            AnimalId = 1,
+                            AuthorId = 1,
+                            District = "Małopolska",
+                            Latitude = 52.039999999999999,
+                            Longitude = 21.943999999999999
+                        },
+                        new
+                        {
+                            Id = 6,
+                            ActiveUntil = new DateTime(2023, 10, 1, 19, 5, 36, 766, DateTimeKind.Local).AddTicks(8258),
+                            Added = new DateTime(2023, 10, 1, 9, 5, 36, 766, DateTimeKind.Local).AddTicks(8256),
+                            AnimalId = 1,
+                            AuthorId = 1,
+                            District = "Małopolska",
+                            Latitude = 50.151000000000003,
+                            Longitude = 20.943999999999999
+                        },
+                        new
+                        {
+                            Id = 7,
+                            ActiveUntil = new DateTime(2023, 10, 1, 19, 5, 36, 766, DateTimeKind.Local).AddTicks(8262),
+                            Added = new DateTime(2023, 10, 1, 9, 5, 36, 766, DateTimeKind.Local).AddTicks(8261),
+                            AnimalId = 1,
+                            Annotation = "Cokolwiek2",
+                            AuthorId = 1,
+                            District = "Małopolska",
+                            Latitude = 54.020000000000003,
+                            Longitude = 16.943999999999999
+                        },
+                        new
+                        {
+                            Id = 8,
+                            ActiveUntil = new DateTime(2023, 10, 1, 19, 5, 36, 766, DateTimeKind.Local).AddTicks(8267),
+                            Added = new DateTime(2023, 10, 1, 9, 5, 36, 766, DateTimeKind.Local).AddTicks(8265),
+                            AnimalId = 2,
+                            Annotation = "Cokolwiek3",
+                            AuthorId = 1,
+                            District = "Małopolska",
+                            Latitude = 53.030000000000001,
+                            Longitude = 18.943999999999999
+                        },
+                        new
+                        {
+                            Id = 9,
+                            ActiveUntil = new DateTime(2023, 10, 1, 19, 5, 36, 766, DateTimeKind.Local).AddTicks(8271),
+                            Added = new DateTime(2023, 10, 1, 9, 5, 36, 766, DateTimeKind.Local).AddTicks(8270),
+                            AnimalId = 2,
+                            Annotation = "Cokolwiek3",
+                            AuthorId = 1,
+                            District = "Małopolska",
+                            Latitude = 52.32,
+                            Longitude = 20.544
+                        },
+                        new
+                        {
+                            Id = 10,
+                            ActiveUntil = new DateTime(2023, 10, 1, 19, 5, 36, 766, DateTimeKind.Local).AddTicks(8276),
+                            Added = new DateTime(2023, 10, 1, 9, 5, 36, 766, DateTimeKind.Local).AddTicks(8274),
+                            AnimalId = 1,
+                            Annotation = "Cokolwiek3",
+                            AuthorId = 1,
+                            District = "Małopolska",
+                            Latitude = 49.439999999999998,
+                            Longitude = 19.344000000000001
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole<int>", b =>

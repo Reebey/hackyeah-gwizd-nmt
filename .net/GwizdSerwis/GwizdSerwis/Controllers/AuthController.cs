@@ -49,6 +49,7 @@ namespace GwizdSerwis.Controllers
     public class AuthController : ControllerBase
     {
         private readonly UserManager<AppUser> _userManager;
+        public static string? Token { get; private set; }
 
         public AuthController(UserManager<AppUser> userManager)
         {
@@ -89,6 +90,7 @@ namespace GwizdSerwis.Controllers
             {
                 // Generate a JWT token and return it as part of the response.
                 var token = GenerateJwtToken(user);
+                Token = token;
                 return Ok(new { Token = token });
             }
 
@@ -98,18 +100,19 @@ namespace GwizdSerwis.Controllers
 
         private string GenerateJwtToken(AppUser user)
         {
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("YourSecretKey"));
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("MySecretKey!@#123"));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
             var token = new JwtSecurityToken(
                 claims: new[]
                 {
                 new Claim(JwtRegisteredClaimNames.Sub, user.Email),
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
                 new Claim(ClaimTypes.Name, $"{user.FirstName} {user.LastName}"),
                 new Claim(JwtRegisteredClaimNames.Sub, user.Email),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
                 },
-                expires: DateTime.UtcNow.AddMinutes(30),
+                expires: DateTime.UtcNow.AddHours(24),
                 signingCredentials: creds
             );
 

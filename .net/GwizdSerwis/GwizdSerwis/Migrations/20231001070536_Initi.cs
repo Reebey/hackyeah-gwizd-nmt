@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace GwizdSerwis.Migrations
 {
     /// <inheritdoc />
-    public partial class Initial : Migration
+    public partial class Initi : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -186,7 +186,10 @@ namespace GwizdSerwis.Migrations
                     AnimalId = table.Column<int>(type: "int", nullable: false),
                     Longitude = table.Column<double>(type: "float", nullable: false),
                     Latitude = table.Column<double>(type: "float", nullable: false),
-                    Annotation = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    Annotation = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    District = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Added = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ActiveUntil = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -247,8 +250,25 @@ namespace GwizdSerwis.Migrations
                 columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Email", "EmailConfirmed", "FirstName", "LastName", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
                 values: new object[,]
                 {
-                    { 1, 0, "5e9d9e1c-d0fd-4c9d-a6be-910deeafbcbf", "test@example.com", false, "Mateusz", "Kowalski", false, null, null, null, null, null, false, null, false, "test@example.com" },
-                    { 2, 0, "20e05b14-810c-443e-86da-17808657995f", "admintest@example.com", false, "Michal", "Nowak", false, null, null, null, null, null, false, null, false, "admintest@example.com" }
+                    { 1, 0, "a4111d83-e1bc-423d-ba45-62b14774df97", "test@example.com", false, "Mateusz", "Kowalski", false, null, null, null, null, null, false, null, false, "test@example.com" },
+                    { 2, 0, "cdba7856-fc5b-4b9a-802a-cf1ab1dbd5b1", "admintest@example.com", false, "Michal", "Nowak", false, null, null, null, null, null, false, null, false, "admintest@example.com" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Points",
+                columns: new[] { "Id", "ActiveUntil", "Added", "AnimalId", "Annotation", "AuthorId", "District", "Latitude", "Longitude" },
+                values: new object[,]
+                {
+                    { 1, new DateTime(2023, 10, 1, 19, 5, 36, 766, DateTimeKind.Local).AddTicks(8233), new DateTime(2023, 10, 1, 9, 5, 36, 766, DateTimeKind.Local).AddTicks(8191), 1, "Cokolwiek", 1, "Małopolska", 50.049999999999997, 19.923999999999999 },
+                    { 2, new DateTime(2023, 10, 1, 13, 5, 36, 766, DateTimeKind.Local).AddTicks(8240), new DateTime(2023, 10, 1, 9, 5, 36, 766, DateTimeKind.Local).AddTicks(8238), 2, "Cokolwiek", 1, "Małopolska", 50.149999999999999, 19.974 },
+                    { 3, new DateTime(2023, 10, 1, 12, 5, 36, 766, DateTimeKind.Local).AddTicks(8244), new DateTime(2023, 10, 1, 9, 5, 36, 766, DateTimeKind.Local).AddTicks(8243), 4, "Cokolwiek", 1, "Małopolska", 50.25, 19.954000000000001 },
+                    { 4, new DateTime(2023, 10, 1, 19, 5, 36, 766, DateTimeKind.Local).AddTicks(8249), new DateTime(2023, 10, 1, 9, 5, 36, 766, DateTimeKind.Local).AddTicks(8247), 7, null, 1, "Małopolska", 51.149999999999999, 19.963999999999999 },
+                    { 5, new DateTime(2023, 10, 1, 17, 5, 36, 766, DateTimeKind.Local).AddTicks(8253), new DateTime(2023, 10, 1, 9, 5, 36, 766, DateTimeKind.Local).AddTicks(8252), 1, null, 1, "Małopolska", 52.039999999999999, 21.943999999999999 },
+                    { 6, new DateTime(2023, 10, 1, 19, 5, 36, 766, DateTimeKind.Local).AddTicks(8258), new DateTime(2023, 10, 1, 9, 5, 36, 766, DateTimeKind.Local).AddTicks(8256), 1, null, 1, "Małopolska", 50.151000000000003, 20.943999999999999 },
+                    { 7, new DateTime(2023, 10, 1, 19, 5, 36, 766, DateTimeKind.Local).AddTicks(8262), new DateTime(2023, 10, 1, 9, 5, 36, 766, DateTimeKind.Local).AddTicks(8261), 1, "Cokolwiek2", 1, "Małopolska", 54.020000000000003, 16.943999999999999 },
+                    { 8, new DateTime(2023, 10, 1, 19, 5, 36, 766, DateTimeKind.Local).AddTicks(8267), new DateTime(2023, 10, 1, 9, 5, 36, 766, DateTimeKind.Local).AddTicks(8265), 2, "Cokolwiek3", 1, "Małopolska", 53.030000000000001, 18.943999999999999 },
+                    { 9, new DateTime(2023, 10, 1, 19, 5, 36, 766, DateTimeKind.Local).AddTicks(8271), new DateTime(2023, 10, 1, 9, 5, 36, 766, DateTimeKind.Local).AddTicks(8270), 2, "Cokolwiek3", 1, "Małopolska", 52.32, 20.544 },
+                    { 10, new DateTime(2023, 10, 1, 19, 5, 36, 766, DateTimeKind.Local).AddTicks(8276), new DateTime(2023, 10, 1, 9, 5, 36, 766, DateTimeKind.Local).AddTicks(8274), 1, "Cokolwiek3", 1, "Małopolska", 49.439999999999998, 19.344000000000001 }
                 });
 
             migrationBuilder.CreateIndex(
