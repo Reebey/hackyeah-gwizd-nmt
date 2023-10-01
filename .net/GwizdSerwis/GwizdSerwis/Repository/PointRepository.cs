@@ -11,6 +11,7 @@ namespace GwizdSerwis.Repository
     {
         Task<IEnumerable<Point>> GetAllAsync();
         Task<Point> CreatePointAync(string userId, PointFVO point);
+        Task<IEnumerable<Point>> GetNewestPins(int limit);
     }
 
     public class PointRepository : IPointRepository
@@ -33,6 +34,11 @@ namespace GwizdSerwis.Repository
         public async Task<IEnumerable<Point>> GetAllAsync()
         {
             return await _dbContext.Points.ToListAsync();
+        }
+
+        public async Task<IEnumerable<Point>> GetNewestPins(int limit)
+        {
+            return await _dbContext.Points.Include(p => p.Author).Include(p => p.Animal).Include(p => p.Images).OrderByDescending(p => p.Added).Take(limit).ToListAsync();
         }
     }
 }

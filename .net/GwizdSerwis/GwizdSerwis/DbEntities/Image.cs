@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace GwizdSerwis.DbEntities
 {
@@ -8,6 +9,7 @@ namespace GwizdSerwis.DbEntities
         public string Path { get; set; } = null!;
 
 
+        [JsonIgnore]
         [ForeignKey("PointId")]
         [InverseProperty("Images")]
         public Point Point { get; set; } = null!;
