@@ -1,6 +1,41 @@
 import 'package:flutter/material.dart';
+import 'package:gwizd/models/auth_model.dart';
+import 'package:gwizd/utility/http_client.dart';
 
 class RegisterView extends StatelessWidget {
+  final apiClient = ApiClient();
+  final emailController = TextEditingController();
+  final firstNameController = TextEditingController();
+  final lastNameController = TextEditingController();
+  final passwordController = TextEditingController();
+  final confirmPasswordController = TextEditingController();
+
+  Future<bool> handleRegister() async {
+    final registerModel = RegisterModel(
+      email: emailController.text,
+      firstName: firstNameController.text,
+      lastName: lastNameController.text,
+      password: passwordController.text,
+      confirmPassword: confirmPasswordController.text,
+    );
+
+    try {
+      final response = await apiClient.postRegister(registerModel);
+      print(response.statusCode);
+      if (response.statusCode == 200) {
+        // Successful login, navigate to the home screen
+        return true;
+      } else {
+        // Handle login failure, show an error message, or throw an exception
+        return false;
+      }
+    } catch (e) {
+      // Handle any exceptions or errors during the API request
+      // Show an error message or log the error
+    }
+    return false;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -22,13 +57,11 @@ class RegisterView extends StatelessWidget {
                 decoration: InputDecoration(
                   labelText: 'First name',
                 ),
-                obscureText: true, // To hide the password
               ),
               const TextField(
                 decoration: InputDecoration(
                   labelText: 'Last name',
                 ),
-                obscureText: true, // To hide the password
               ),
               const TextField(
                 decoration: InputDecoration(
@@ -42,10 +75,19 @@ class RegisterView extends StatelessWidget {
                 ),
                 obscureText: true, // To hide the password
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               ElevatedButton(
                 onPressed: () {
-                  // Add your registration logic here
+                  handleRegister().then(
+                    (value) => value
+                        ? Navigator.pushNamed(context, '/login')
+                        : ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text(
+                                  'Register failed. Please check your credentials.'),
+                            ),
+                          ),
+                  );
                 },
                 child: const Text('Register'),
               ),
