@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace GwizdSerwis.DbEntities
 {
@@ -8,6 +9,7 @@ namespace GwizdSerwis.DbEntities
         public ThreatLevel ThreatLevel { get; set; }
 
 
+        [JsonIgnore]
         [InverseProperty("Animal")]
         public ICollection<Point> Points { get; set; } = new List<Point>();
     }

@@ -32,7 +32,7 @@ namespace GwizdSerwis.Controllers
         }
 
         [HttpGet("NewestPoints")]
-        public async Task<ActionResult> GetNewestPinsAsymc(int limit)
+        public async Task<ActionResult> GetNewestPinsAsymc([FromQuery] int limit = 100)
         {
             var data = await _pointService.GetNewestPins(limit);
             return Ok(data);

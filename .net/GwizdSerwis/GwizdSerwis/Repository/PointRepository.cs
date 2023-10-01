@@ -38,7 +38,7 @@ namespace GwizdSerwis.Repository
 
         public async Task<IEnumerable<Point>> GetNewestPins(int limit)
         {
-            return await _dbContext.Points.OrderByDescending(p => p.Added).Take(limit).ToListAsync();
+            return await _dbContext.Points.Include(p => p.Author).Include(p => p.Animal).Include(p => p.Images).OrderByDescending(p => p.Added).Take(limit).ToListAsync();
         }
     }
 }
