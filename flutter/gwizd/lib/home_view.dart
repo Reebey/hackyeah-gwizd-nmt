@@ -29,6 +29,7 @@ class _HomeViewState extends State<HomeView> {
   // Track whether the report dialog is open or not
   bool isReportDialogOpen = false;
   bool isReportButtonEnabled = true;
+  bool isReportSubmitEnabled = true;
 
   late List<AnimalModel> animals = List.empty();
   late List<Point> dashboardPoints = List.empty();
@@ -108,9 +109,15 @@ class _HomeViewState extends State<HomeView> {
                             .format(DateTime.parse(item.added)),
                       ),
                       onTap: () {
+                        setState() {
+                          selectedPoint = item;
+                        }
+
                         centerMap(LatLng(item.latitude, item.longitude));
+
                         // Add your item click action here
                         Navigator.pop(context); // Close the drawer
+                        _scaffoldKey.currentState?.openEndDrawer();
                       },
                     )),
             // Add more dashboard items here
@@ -119,14 +126,23 @@ class _HomeViewState extends State<HomeView> {
       ),
       endDrawer: Drawer(
         child: ListView(
-          children: <Widget>[
+          padding: const EdgeInsets.all(16),
+          children: [
             ListTile(
-              title: const Text('Filters'),
-              onTap: () {
-                Navigator.pop(context);
-              },
+              title: Text('Localization'),
+              subtitle: Text(
+                  'Lat: ${selectedPoint?.latitude}, Long: ${selectedPoint?.longitude}'),
             ),
-            // Add filter options here
+            ListTile(
+              title: Text('Animal'),
+              subtitle: Text(
+                  'Name: ${selectedPoint?.animal.name}, Threat Level: ${selectedPoint?.animal.threatLevel}'),
+            ),
+            ListTile(
+              title: Text('Images'),
+              subtitle:
+                  Text('Number of Images: ${selectedPoint?.images.length}'),
+            ),
           ],
         ),
       ),
@@ -205,41 +221,47 @@ class _HomeViewState extends State<HomeView> {
     }
   }
 
-  Future<void> submitReport(
+  Future submitReport(
     BuildContext context,
     Map<String, dynamic> formData,
     XFile? image,
   ) async {
-    try {
-      final animal = formData['Animal'];
-      final location = jsonDecode(formData['Location']);
-      final annotation = formData['Annotation'];
+    final animal = formData['Animal'];
+    final latMatch =
+        RegExp(r'Lat: ([-+]?\d*\.\d+|\d+),').firstMatch(formData['Location']);
+    final longMatch =
+        RegExp(r'Long: ([-+]?\d*\.\d+|\d+)').firstMatch(formData['Location']);
 
-      print(animal);
-      print(location);
-      print(annotation);
-
-      final point = PointFVO(
-          animalId: animal,
-          latitude: location['latitude'],
-          longitude: location['latitude'],
-          annotation: annotation);
-      final response = await apiClient.postPoint(point);
-      selectedPoint = Point.fromJson(json.decode(response.body));
-
-      final imgIdResponse =
-          await apiClient.postPointImage(selectedPoint!.id, image!);
-
-      centerMap(LatLng(point.latitude, point.longitude));
-
-      // Close the report dialog
-      Navigator.pop(context);
-    } catch (error) {
-      // Handle errors, e.g., display an error message
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text('Error: $error'),
-      ));
+    late double latitude;
+    late double longitude;
+    if (latMatch != null && longMatch != null) {
+      latitude = double.parse(latMatch.group(1)!);
+      longitude = double.parse(longMatch.group(1)!);
+      print('Latitude: $latitude');
+      print('Longitude: $longitude');
+    } else {
+      print('Invalid input string');
     }
+    final annotation = formData['Annotation'];
+
+    print(animal);
+    print(annotation);
+
+    final point = PointFVO(
+        animalId: int.parse(animal),
+        latitude: latitude,
+        longitude: longitude,
+        annotation: annotation);
+    final response = await apiClient.postPoint(point);
+    selectedPoint = Point.fromJson(json.decode(response.body));
+
+    final imgIdResponse =
+        await apiClient.postPointImage(selectedPoint!.id, image!);
+
+    centerMap(LatLng(point.latitude, point.longitude));
+
+    // Close the report dialog
+    Navigator.pop(context);
   }
 
   Future<void> fetchAnimals() async {
@@ -323,26 +345,34 @@ class _HomeViewState extends State<HomeView> {
                   style: const TextStyle(fontSize: 8),
                 ),
                 ElevatedButton(
-                  onPressed: () {
-                    if (_formKey.currentState!.saveAndValidate()) {
-                      final formData = _formKey.currentState!.value;
-                      print(formData);
+                  onPressed: isReportButtonEnabled
+                      ? () async {
+                          print('dsaads');
 
-                      if (image != null) {
-                        final imagePath = image.path;
-                        print('Image Path: $imagePath');
-                      }
+                          if (_formKey.currentState!.saveAndValidate()) {
+                            isReportSubmitEnabled = false;
+                            final formData = _formKey.currentState!.value;
+                            print('aa');
+                            print(formData);
 
-                      if (_formKey.currentState!.saveAndValidate()) {
-                        final formData = _formKey.currentState!.value;
-                        submitReport(context, formData, image);
-                      }
-                    }
-                  },
+                            if (image != null) {
+                              final imagePath = image.path;
+                              print('Image Path: $imagePath');
+                            }
+                            print('bb');
+
+                            await submitReport(context, formData, image);
+                            print('dsds');
+                            isReportSubmitEnabled = true;
+                          }
+                        }
+                      : null,
                   style: ElevatedButton.styleFrom(
                     padding: const EdgeInsets.all(12),
                   ),
-                  child: const Text('Submit Report'),
+                  child: !isReportButtonEnabled
+                      ? const CircularProgressIndicator() // Show a loading indicator
+                      : const Text('Submit Report'),
                 ),
               ],
             ),

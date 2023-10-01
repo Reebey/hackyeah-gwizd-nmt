@@ -1,3 +1,25 @@
+import 'package:flutter/material.dart';
+
+class ImageModel {
+  final int pointId;
+  final String path;
+  final int id;
+
+  ImageModel({
+    required this.pointId,
+    required this.path,
+    required this.id,
+  });
+
+  factory ImageModel.fromJson(Map<String, dynamic> json) {
+    return ImageModel(
+      pointId: json['pointId'],
+      path: json['path'],
+      id: json['id'],
+    );
+  }
+}
+
 class PointFVO {
   final double longitude;
   final double latitude;
@@ -39,12 +61,11 @@ class Point {
   final double longitude;
   final double latitude;
   final String? annotation;
-  final String district;
   final String added;
   final String activeUntil;
   final Author author;
   final Animal animal;
-  final List<dynamic> images;
+  final List<ImageModel> images;
 
   Point({
     required this.id,
@@ -53,7 +74,6 @@ class Point {
     required this.longitude,
     required this.latitude,
     required this.annotation,
-    required this.district,
     required this.added,
     required this.activeUntil,
     required this.author,
@@ -62,6 +82,10 @@ class Point {
   });
 
   factory Point.fromJson(Map<String, dynamic> json) {
+    var imageList = json['images'] as List<dynamic>;
+    var imageModels =
+        imageList.map((imageJson) => ImageModel.fromJson(imageJson)).toList();
+
     return Point(
       id: json['id'],
       authorId: json['authorId'],
@@ -69,12 +93,11 @@ class Point {
       longitude: json['longitude'],
       latitude: json['latitude'],
       annotation: json['annotation'],
-      district: json['district'],
       added: json['added'],
       activeUntil: json['activeUntil'],
       author: Author.fromJson(json['author']),
       animal: Animal.fromJson(json['animal']),
-      images: json['images'],
+      images: imageModels,
     );
   }
 }

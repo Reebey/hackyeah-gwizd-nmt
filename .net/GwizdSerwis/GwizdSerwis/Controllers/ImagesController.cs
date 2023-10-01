@@ -33,7 +33,7 @@ namespace GwizdSerwis.Controllers
 
         [HttpPost]
         [Route("UploadImage")]
-        public async Task<IActionResult> UploadImage([FromQuery] int pointId, IFormFile image)
+        public async Task<IActionResult> UploadImage([FromQuery] int pointId, [FromForm] IFormFile image)
         {
             try
             {

@@ -73,6 +73,27 @@ class ApiClient {
     return await sendGet('api/Animal/Animals');
   }
 
+  Future<http.Response> getImage(int image) async {
+    return await sendGet('api/Images/$image');
+  }
+
+  Future<List<List<int>>?> getImages(List<int> imageIds) async {
+    List<List<int>> images = [];
+
+    for (int id in imageIds) {
+      final response = await getImage(id);
+
+      if (response.statusCode == 200) {
+        images.add(response.bodyBytes);
+      } else {
+        // Handle error here if needed
+        print('Failed to fetch image for ID $id');
+      }
+    }
+
+    return images.isNotEmpty ? images : null;
+  }
+
   Future<http.Response> getDashboardPoints() async {
     return await sendGet('api/Point/NewestPoints?limit=100');
   }
@@ -86,13 +107,17 @@ class ApiClient {
   }
 
   Future<http.Response> postPointImage(int pointId, XFile imageFile) async {
-    final url = Uri.parse('$baseUrl/images/UploadImage?pointId=$pointId');
+    final url = Uri.parse('$baseUrl/api/images/UploadImage?pointId=$pointId');
     var request = http.MultipartRequest('POST', url)
       ..files.add(await http.MultipartFile.fromPath('image', imageFile.path));
+    request.headers['Content-Type'] = 'multipart/form-data';
 
     var responseStream = await request.send();
 
-    return await http.Response.fromStream(responseStream);
+    var response = await http.Response.fromStream(responseStream);
+    print(response.statusCode);
+    print(response.body);
+    return response;
   }
 
   Future<http.Response> postLogin(LoginModel model) async {

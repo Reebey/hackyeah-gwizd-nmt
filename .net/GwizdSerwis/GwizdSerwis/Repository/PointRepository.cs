@@ -28,7 +28,7 @@ namespace GwizdSerwis.Repository
             Point newPoint = new Point() { AuthorId = userIdInt, Latitude = point.Localization.Latitude, Longitude = point.Localization.Longitude, AnimalId = point.AnimalId.Value };
             await _dbContext.Points.AddAsync(newPoint);
             _dbContext.SaveChanges();
-            return newPoint;
+            return _dbContext.Points.Include(p => p.Author).Include(p => p.Animal).Include(p => p.Images).First(p => p.Id == newPoint.Id);
         }
 
         public async Task<IEnumerable<Point>> GetAllAsync()
