@@ -8,6 +8,7 @@ namespace GwizdSerwis.Services
     {
         Task<IEnumerable<Point>> GetAllAsync();
         Task<Point> CreatePointAync(string userId, PointFVO point);
+        Task<IEnumerable<Point>> GetNewestPins(int limit);
     }
 
     public class PointService : IPointService
@@ -28,6 +29,11 @@ namespace GwizdSerwis.Services
         public async Task<IEnumerable<Point>> GetAllAsync()
         {
             return await _pointRepository.GetAllAsync();
+        }
+
+        public async Task<IEnumerable<Point>> GetNewestPins(int limit)
+        {
+            return await _pointRepository.GetNewestPins(limit);
         }
     }
 }

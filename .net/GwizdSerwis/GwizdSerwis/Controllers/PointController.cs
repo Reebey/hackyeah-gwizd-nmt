@@ -31,6 +31,13 @@ namespace GwizdSerwis.Controllers
             return Ok(data);
         }
 
+        [HttpGet("NewestPoints")]
+        public async Task<ActionResult> GetNewestPinsAsymc(int limit)
+        {
+            var data = await _pointService.GetNewestPins(limit);
+            return Ok(data);
+        }
+
         // GET: api/sample/{id}
         [HttpGet("{id}")]
         public IActionResult GetByIdAsync(int id)
