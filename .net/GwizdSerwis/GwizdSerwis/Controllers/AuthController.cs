@@ -49,6 +49,7 @@ namespace GwizdSerwis.Controllers
     public class AuthController : ControllerBase
     {
         private readonly UserManager<AppUser> _userManager;
+        public static string? Token { get; private set; }
 
         public AuthController(UserManager<AppUser> userManager)
         {
@@ -89,6 +90,7 @@ namespace GwizdSerwis.Controllers
             {
                 // Generate a JWT token and return it as part of the response.
                 var token = GenerateJwtToken(user);
+                Token = token;
                 return Ok(new { Token = token });
             }
 

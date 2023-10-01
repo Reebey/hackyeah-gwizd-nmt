@@ -9,11 +9,13 @@ namespace GwizdSerwis.Controllers
     [ApiController]
     public class PointController : ControllerBase
     {
-        protected readonly IPointService _pointService;
+        private readonly IPointService _pointService;
+        private readonly ITokenService _tokenService;
 
-        public PointController(IPointService pointService)
+        public PointController(IPointService pointService, ITokenService tokenService)
         {
             _pointService = pointService;
+            _tokenService = tokenService;
         }
 
         // GET: api/sample
@@ -33,10 +35,12 @@ namespace GwizdSerwis.Controllers
         }
 
         // POST: api/sample
-        [HttpPost]
-        public IActionResult Post([FromBody] PointFVO pointFVO)
+        [HttpPost("CreatePoint")]
+        public async Task<IActionResult> CreatePoint([FromBody] PointFVO pointFVO)
         {
-            throw new NotImplementedException();
+            var principal = _tokenService.GetClaimsPrincipalFromToken(AuthController.Token);
+            var point = await _pointService.CreatePointAync();
+            return Ok(point);
         }
 
         // PUT: api/sample/{id}

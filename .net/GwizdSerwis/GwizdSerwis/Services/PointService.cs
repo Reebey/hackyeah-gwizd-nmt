@@ -6,6 +6,7 @@ namespace GwizdSerwis.Services
     public interface IPointService
     {
         Task<IEnumerable<Point>> GetAllAsync();
+        Task<Point> CreatePointAync();
     }
 
     public class PointService : IPointService
@@ -15,6 +16,12 @@ namespace GwizdSerwis.Services
         public PointService(IPointRepository pointRepository)
         {
             _pointRepository = pointRepository;
+        }
+
+        public async Task<Point> CreatePointAync()
+        {
+            var point = await _pointRepository.CreatePointAync();
+            return point;
         }
 
         public async Task<IEnumerable<Point>> GetAllAsync()

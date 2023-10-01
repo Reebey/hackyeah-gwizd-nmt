@@ -8,8 +8,8 @@ namespace GwizdSerwis.Repository
 {
     public interface IPointRepository
     {
-        Task<ICollection<Point>> GetAllAsync();
-        Task CreatePointAync();
+        Task<IEnumerable<Point>> GetAllAsync();
+        Task<Point> CreatePointAync();
     }
 
     public class PointRepository : IPointRepository
@@ -20,13 +20,14 @@ namespace GwizdSerwis.Repository
             _dbContext = dbContext;
         }
 
-        public async Task CreatePointAync()
+        public async Task<Point> CreatePointAync()
         {
             Point newPoint = new Point() { };
             await _dbContext.Points.AddAsync(newPoint);
+            return newPoint;
         }
 
-        public async Task<ICollection<Point>> GetAllAsync()
+        public async Task<IEnumerable<Point>> GetAllAsync()
         {
             return await _dbContext.Points.ToListAsync();
         }

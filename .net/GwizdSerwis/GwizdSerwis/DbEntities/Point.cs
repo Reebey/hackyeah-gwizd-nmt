@@ -9,7 +9,7 @@ namespace GwizdSerwis.DbEntities
         public double Longitude { get; set; }
         public double Latitude { get; set; }
         public string? Annotation { get; set; }
-
+        public string? District { get; set; }
 
         [ForeignKey("AuthorId")]
         public AppUser Author { get; set; } = null!;
