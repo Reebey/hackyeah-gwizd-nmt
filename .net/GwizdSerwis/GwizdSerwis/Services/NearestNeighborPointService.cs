@@ -2,7 +2,12 @@
 
 namespace GwizdSerwis.Services;
 
-public class NearestNeighborPointService
+public interface INearestNeighborPointService
+{
+    Task<IEnumerable<Point>> FindNearestPoints(Point target, long distancePoint);
+}
+
+public class NearestNeighborPointService : INearestNeighborPointService
 {
     private readonly IPointService _pointService;
 

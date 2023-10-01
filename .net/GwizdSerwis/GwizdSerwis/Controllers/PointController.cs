@@ -15,11 +15,13 @@ namespace GwizdSerwis.Controllers
     {
         private readonly IPointService _pointService;
         private readonly UserManager<AppUser> _userManager;
+        private readonly INearestNeighborPointService _nearestNeighborPointService;
 
-        public PointController(IPointService pointService, UserManager<AppUser> userManager)
+        public PointController(IPointService pointService, UserManager<AppUser> userManager, INearestNeighborPointService nearestNeighborPointService)
         {
             _pointService = pointService;
             _userManager = userManager;
+            _nearestNeighborPointService = nearestNeighborPointService;
         }
 
         // GET: api/sample
@@ -46,6 +48,14 @@ namespace GwizdSerwis.Controllers
             var user = await _userManager.FindByEmailAsync(userName);
             var point = await _pointService.CreatePointAync(user.Id.ToString(), pointFVO);
             return Ok(point);
+        }
+
+        // POST: api/sample
+        [HttpPost("NearestPoints")]
+        public async Task<IActionResult> NearestPoints([FromBody] PointFVO pointFVO, long distance)
+        {
+            var data = await _nearestNeighborPointService.FindNearestPoints(new Point() { Longitude = pointFVO.Localization.Longitude, Latitude = pointFVO.Localization.Latitude }, distance);
+            return Ok(data);
         }
 
         // PUT: api/sample/{id}

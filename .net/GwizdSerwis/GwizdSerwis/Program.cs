@@ -24,6 +24,7 @@ builder.Services.AddScoped<IAnimalService, AnimalService>();
 builder.Services.AddScoped<IPointService, PointService>();
 builder.Services.AddScoped<IImageService, ImageService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
+builder.Services.AddScoped<INearestNeighborPointService, NearestNeighborPointService>();
 //filter
 builder.Services.AddScoped<MyCustomActionFilter>();
 
